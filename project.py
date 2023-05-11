@@ -46,7 +46,7 @@ dataset = [
 
 # Placeholder details (to be modified)
 sender_email = 'amber.renee.adamson@gmail.com'
-sender_password = 'jqpdqjsyxvugozle'
+sender_password = '[pass]'
 receiver_email = 'amber.renee.adamson@gmail.com'
 subject = 'CSV file'
 body = 'Please find the attached CSV file.'
