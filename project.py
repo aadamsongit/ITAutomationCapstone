@@ -79,7 +79,7 @@ def add_to_grades():
 
 # Sender & Recipient Addresses + Subject and body
 sender_email = 'amber.renee.adamson@gmail.com'
-sender_password = 'jqpdqjsyxvugozle'
+sender_password = '[pass]'
 receiver_email = 'amber.renee.adamson@gmail.com'
 subject = 'CSV file'
 Date = datetime.datetime.now()
