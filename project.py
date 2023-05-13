@@ -98,26 +98,48 @@ def csv_file_sort():
 
     return ['math_grades.csv', 'english_grades.csv', 'history_grades.csv']
 
+def average_the_grades():
+    # Create a DataFrame from the list of dictionaries
+    df = pd.DataFrame(students_with_grades)
+
+    # Convert the 'Grade' column to numeric values
+    df['Grade'] = pd.to_numeric(df['Grade'])
+
+    # Calculate the average grades for each class
+    class_averages = df.groupby('Class')['Grade'].mean()
+
+    for class_name, average in class_averages.items():
+        if average > 85:
+            print(f"The students of {class_name} performed very well!")
+        elif 85 > average > 70:
+            print(f"The students of {class_name} need more practice.")
+        else:
+            print(f"The students of {class_name} need tutoring and remedial lessons. Please closely monitor progress.")
+
 
 # Sender & Recipient Addresses + Subject and body
 sender_email = 'amber.renee.adamson@gmail.com'
 sender_password = '[pass]'
 receiver_email = 'amber.renee.adamson@gmail.com'
-subject = 'CSV file'
+subject = 'Grade Report'
 Date = datetime.datetime.now()
 body = (f"'Attached is the report for {Date}'")
+csv_file_paths = csv_file_sort()
 
 def main():
-    csv_file_paths = csv_file_sort()
+    
 # Run the functions
     try:
         add_to_grades()
         add_the_curve()
         csv_file_sort()
+        average_the_grades()
+    
     except Exception as e:
         print(f"Error occurred while processing the dataset: {e}")
         
         convert_to_csv(csv_file_paths)
+        
 
 
 # Send the CSV file via email
