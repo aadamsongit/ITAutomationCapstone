@@ -5,37 +5,39 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import pandas as pd
 
 # Global Data = Class data
 students_with_grades = [
     {'Name': 'Roger Rabbit', 'Grade': '72', 'Class': 'Math'},
     {'Name': 'The Rock', 'Grade': '95', 'Class': 'English'},
-    {'Name': 'Slenderman', 'Grade': '40', 'Class': 'Film'},
-    {'Name': 'Thor - God of Thunder', 'Grade': '60', 'Class': 'Math'},
-    {'Name': 'Zelda', 'Grade': '98', 'Class': 'Journalism'},
-    {'Name': 'Winnie the Pooh', 'Grade': '80', 'Class': 'Chemistry'},
-    {'Name': 'John Doe', 'Grade': '77', 'Class': 'AP Chemistry'},
-    {'Name': 'Gandalf', 'Grade': '100', 'Class': 'AP Literature'},
+    {'Name': 'Slenderman', 'Grade': '40', 'Class': 'English'},
+    {'Name': 'Thor - God of Thunder', 'Grade': '60', 'Class': 'History'},
+    {'Name': 'Zelda', 'Grade': '98', 'Class': 'Math'},
+    {'Name': 'Winnie the Pooh', 'Grade': '80', 'Class': 'History'},
+    {'Name': 'John Doe', 'Grade': '77', 'Class': 'English'},
+    {'Name': 'Gandalf', 'Grade': '100', 'Class': 'Math'},
     {'Name': 'Amber Adamson', 'Grade': '90', 'Class': 'History'},
-    {'Name': 'Jon Snow', 'Grade': '85', 'Class': 'Physics'},
+    {'Name': 'Jon Snow', 'Grade': '85', 'Class': 'Math'},
 ]
 
 # Convert to CSV file
-def convert_to_csv(csv_file):
+def convert_to_csv(csv_files):
     try:
-        with open(csv_file, 'w', newline='') as file:
-            writer = csv.writer(file)
-            # Extract the headers from the keys of the first dictionary in the dataset
-            headers = list(students_with_grades[0].keys())
-            writer.writerow(headers)
-            # Write the values for each dictionary
-            for data in students_with_grades:
-                writer.writerow(data.values())
+        for csv_file in csv_files:
+            with open(csv_file, 'w', newline='') as file:
+                writer = csv.writer(file)
+                # Extract the headers from the keys of the first dictionary in the dataset
+                headers = list(students_with_grades[0].keys())
+                writer.writerow(headers)
+                # Write the values for each dictionary
+                for data in students_with_grades:
+                    writer.writerow(data.values())
     except IOError as e:
         print(f"Error occurred while converting dataset to CSV: {e}")
 
 # Send email with CSV file as attachment
-def send_email(sender_email, sender_password, receiver_email, subject, body, attachment_file):
+def send_email(sender_email, sender_password, receiver_email, subject, body, attachment_files):
     try:
         message = MIMEMultipart()
         message['From'] = sender_email
@@ -44,21 +46,22 @@ def send_email(sender_email, sender_password, receiver_email, subject, body, att
 
         message.attach(MIMEText(body, 'plain'))
 
-        with open(attachment_file, 'rb') as attachment:
-            part = MIMEBase('application', 'octet-stream')
-            part.set_payload(attachment.read())
-            encoders.encode_base64(part)
-            part.add_header('Content-Disposition', f'attachment; filename= {attachment_file}')
+        for attachment_file in attachment_files:
+            with open(attachment_file, 'rb') as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header('Content-Disposition', f'attachment; filename= {attachment_file}')
 
-            message.attach(part)
+                message.attach(part)
 
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(sender_email, sender_password)
-        server.send_message(message)
-        server.quit()
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(message)
+            server.quit()
     except smtplib.SMTPException as e:
-        print(f"Error occurred while sending email: {e}")
+            print(f"Error occurred while sending email: {e}")
 
 # Add a curve to the grades
 def add_the_curve():
@@ -76,6 +79,25 @@ def add_to_grades():
     new_data["Class"] = input("Enter a new student's class: ")
     students_with_grades.append(new_data)
 
+def csv_file_sort():
+
+    # read DataFrame)
+    data = pd.read_csv("output.csv")
+ 
+    subject_math = data[data['Class'] == 'Math']
+    subject_history = data[data['Class'] == 'History']
+    subject_english = data[data['Class'] == 'English']
+ 
+    subject_math.to_csv('math_grades.csv', index=False)
+    subject_english.to_csv('english_grades.csv', index=False)
+    subject_history.to_csv('history_grades.csv', index=False)
+ 
+    print(pd.read_csv("math_grades.csv"))
+    print(pd.read_csv("english_grades.csv"))
+    print(pd.read_csv("history_grades.csv"))
+
+    return ['math_grades.csv', 'english_grades.csv', 'history_grades.csv']
+
 
 # Sender & Recipient Addresses + Subject and body
 sender_email = 'amber.renee.adamson@gmail.com'
@@ -85,20 +107,26 @@ subject = 'CSV file'
 Date = datetime.datetime.now()
 body = (f"'Attached is the report for {Date}'")
 
+def main():
+    csv_file_paths = csv_file_sort()
 # Run the functions
-try:
-    add_to_grades()
-    add_the_curve()
-except Exception as e:
-    print(f"Error occurred while processing the dataset: {e}")
+    try:
+        add_to_grades()
+        add_the_curve()
+        csv_file_sort()
+    except Exception as e:
+        print(f"Error occurred while processing the dataset: {e}")
+        
+        convert_to_csv(csv_file_paths)
 
-# Generate a CSV file
-csv_file_path = 'output.csv'
-convert_to_csv(csv_file_path)
 
 # Send the CSV file via email
-try:
-    send_email(sender_email, sender_password, receiver_email, subject, body, csv_file_path)
-except Exception as e:
-    print(f"Error occurred while sending email: {e}")
+    try:
+        print("Sending email...")
+        send_email(sender_email, sender_password, receiver_email, subject, body, csv_file_paths)
+        print("Email sent successfully.")
+    except Exception as e:
+        print(f"Error occurred while sending email: {e}")
+
+main()
 
