@@ -24,3 +24,11 @@ As a teacher, I want to print notes about the students' progress, so I can provi
 As a school administrator, I want to ensure that grade reports are securely and efficiently sent to parents/guardians, so that sensitive student data is protected and parents receive accurate information.
 
 As a teacher, I want to have an automated system that handles the sorting, grading, and reporting processes, so that I can save time and focus more on teaching and supporting my students.
+
+## Technical challenges and solutions
+
+While writing and debugging the code for this project, I encountered a few technical challenges. Here are the difficulties I faced, and how I solved them:
+
+Initially, I wanted the code to send an email with all three CSV files attached. The code was sending three emails, one with one CSV file, one with two, and a third with all three. Upon consideration, I decided it would be best to send three emails, each with one CSV file attached per subject, so I refactored the main function with a for loop. 
+
+Another technical challenge concerned the handling of the data. At one point, the CSV files were not taking in every entry in the data dictionary, i.e. when I updated the data dictionary with a new entry, it was not being recognized in the CSV output. Additionally, an entry was appearing that I did not add, and the entry I did add (via the input function) was not showing. I believe that this was a result of a prior input which, for some reason, was sticking in the output CSV file. Creating a sorted_data variable and using a lambda sort with two for loops solved the problem, as it re-sorted the data from the data dictionary.
