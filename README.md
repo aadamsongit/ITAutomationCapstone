@@ -5,7 +5,7 @@ A high school has reported the grades for students in three core subjects. Initi
 The tasks that this project aims to automate include sorting the data for the grades into CSV files by subject, then e-mailing each file individually. In addition to sorting the data dictionary into CSV files and generating an email, the code needs to have a function to input an additional student, as well as adding the ten point curve to each grade. Finally, the code also needs to generate a print statement to comment on the progress of each of the three classes, either by noting that the students are performing very well and meeting or exceeding expectations, or by making a note that the students may need additional tutoring or remedial assistance.
 
 
-# User Stories
+## User Stories
 
 As a teacher, I want to be able to sort my students' grades by class, so I can easily see their performance in each subject.
 
