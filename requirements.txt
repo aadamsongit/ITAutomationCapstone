@@ -1,0 +1,11 @@
+import getpass
+import csv
+import smtplib
+import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+import pandas as pd
+import pytest
+from project import main, add_to_grades, add_the_curve, csv_file_sort, average_the_grades, students_with_grades
